@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbf4ba1c168093a459866b1807f7166a, type: 3}
+  m_Name: UIData
+  m_EditorClassIdentifier: 
+  inventoryBackgroundSprite: {fileID: 21300000, guid: 4ae402cec7e741a4092eb2d4a0e9401e, type: 3}
+  inventorySlotSprite: {fileID: 21300000, guid: e7efdf8db5449154da3685d0bd5fd713, type: 3}
+  healthbarSprite: {fileID: 21300000, guid: 368ce29450fd4a4408e26e52023b29a6, type: 3}
+  backgroundSprite: {fileID: 21300000, guid: f7d1eb5ea1041d34294d3f601c1efa80, type: 3}
+  font: {fileID: 12800000, guid: 652f7165b7c30ab46af6c4aad90a639b, type: 2}

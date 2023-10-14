@@ -1,0 +1,281 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+namespace Bunker
+{
+    public class Player : Lifeform
+    {
+        public PlayerSaveData playerSaveData;
+        private float movingSpeed;
+        private float jumpForce;
+
+        private float moveInput;
+        public bool facingRight = false;
+
+        private bool isGrounded = false;
+        private int jumpsLeft = 1;
+        private int maxJumps = 1;
+        private int killCount = 0;
+
+        public Inventory inventory;
+
+        private GameEventController gameEventController;
+        private Camera mainCamera;
+        public static Action<Vector2> OnPlayerHealthChange;
+
+        // Weapons
+        public WeaponData startingWeaponData;
+        private GameObject weaponContainer;
+        private List<WeaponData> weapons = new();
+        private int currentWeaponIndex = 0;
+
+        // Animations
+        public AnimationData idleAnimation;
+        public AnimationData fallingAnimation;
+        public AnimationData flyingAnimation;
+        public AnimationData runningAnimation;
+        private PsuedoAnimationController animationController;
+        private GameSettings gameSettings;
+
+        override protected void StartCall()
+        {
+            mainCamera = FindObjectOfType<Camera>();
+            gameSettings = FindObjectOfType<GameController>().gameSettings;
+            curHealth = maxHealth = gameSettings.PlayerStartingHealth;
+            movingSpeed = gameSettings.PlayerMoveSpeed;
+            jumpForce = gameSettings.PlayerJumpForce;
+
+            inventory = ScriptableObject.CreateInstance<Inventory>();
+            rb = gameObject.AddComponent<Rigidbody2D>();
+            rb.freezeRotation = true;
+
+            GroundDetector.Create(gameObject, 0.1f, Vector3.down * -0.5f, new GroundNotificationTarget(this));
+
+            animationController = PsuedoAnimationController.Build(gameObject, idleAnimation).GetComponent<PsuedoAnimationController>();
+
+            // Weapons
+            InitializeWeaponContainer();
+            weapons.Add(startingWeaponData);
+
+            gameEventController = FindObjectOfType<GameController>().gameEventController;
+            Invoke("DamageCall", 0.1f);
+
+            LoadSaveState();
+        }
+
+
+        public void SavePlayerState()
+        {
+            playerSaveData.currentWeaponIndex = currentWeaponIndex;
+            playerSaveData.weapons = weapons;
+            playerSaveData.buffs = buffController.buffList;
+        }
+
+        private void LoadSaveState()
+        {
+            if (playerSaveData.weapons != null && playerSaveData.weapons.Count > 0)
+            {
+                currentWeaponIndex = playerSaveData.currentWeaponIndex;
+                weapons = playerSaveData.weapons;
+                weaponContainer.GetComponent<WeaponPlayerController>().ChangeWeapon(weapons[currentWeaponIndex]);
+            }
+
+            if (buffController.buffList != null)
+            {
+                foreach (Type buff in buffController.buffList)
+                {
+                    buffController.RemoveBuff(buff);
+                }
+            }
+
+            if (playerSaveData.buffs != null)
+            {
+                foreach (Type buff in playerSaveData.buffs)
+                {
+                    Debug.Log("Adding buff from save data: " + buff);
+                    buffController.AddBuff(buff);
+                }
+            }
+        }
+
+        public static Inventory GetInventory()
+        {
+            return FindObjectOfType<Player>()?.inventory;
+        }
+
+        public void AddJumps(int amount)
+        {
+            maxJumps += amount;
+        }
+
+        public void IncrementKillCount()
+        {
+            killCount++;
+        }
+
+        public int GetKillCount()
+        {
+            return killCount;
+        }
+
+        public void NotifyGround(bool detected)
+        {
+            isGrounded = detected;
+            if (isGrounded) { jumpsLeft = maxJumps; }
+        }
+        private void Update()
+        {
+            AnimationData animationToPlay = idleAnimation;
+            if (Input.GetButton("Horizontal"))
+            {
+                moveInput = Input.GetAxis("Horizontal");
+                // rb.velocity = new Vector3(0, rb.velocity.y, 0);
+                // transform.position += Vector3.right * moveInput * movingSpeed * Time.deltaTime;
+                rb.velocity = new Vector3(moveInput * movingSpeed, rb.velocity.y, 0);
+                animationToPlay = runningAnimation;
+            }
+            else
+            {
+                rb.velocity = new Vector3(0, rb.velocity.y, 0);
+            }
+            if (rb.velocity.y > 0)
+            {
+                animationToPlay = flyingAnimation;
+            }
+            else if (rb.velocity.y < 0)
+            {
+                animationToPlay = fallingAnimation;
+            }
+            if (animationController.GetAnimation() != animationToPlay)
+            {
+                animationController.SetAnimation(animationToPlay);
+            }
+
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                movingSpeed = 2 * gameSettings.PlayerMoveSpeed;
+            }
+            else
+            {
+                movingSpeed = gameSettings.PlayerMoveSpeed;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space) && (isGrounded || jumpsLeft > 0))
+            {
+                jumpsLeft -= 1;
+                rb.velocity = new Vector3(rb.velocity.x, 0, 0);
+                rb.AddForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                FireWeapon();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                ChangeWeapons();
+            }
+
+            Vector3 dir = Input.mousePosition - mainCamera.WorldToScreenPoint(transform.position);
+            if (facingRight == false && dir.x > transform.position.x)
+            {
+                Flip();
+            }
+            else if (facingRight == true && dir.x < transform.position.x)
+            {
+                Flip();
+            }
+        }
+
+        public void GrantWeapon(WeaponData newWeapon)
+        {
+            if (!weapons.Contains(newWeapon))
+            {
+                weapons.Add(newWeapon);
+            }
+            else
+            {
+                gameEventController.PublishEvent(new UINotificationEvent("Cannot equip more " + newWeapon.itemName + "s!"));
+            }
+        }
+
+        void FireWeapon()
+        {
+            weaponContainer.GetComponent<WeaponPlayerController>().Fire();
+        }
+
+        override protected void DieCall()
+        {
+            // SceneManager.LoadScene(2);
+            Time.timeScale = 0;
+        }
+
+        void OnCollisionEnter2D(Collision2D other)
+        {
+            other.gameObject.GetComponent<ItemPrefabController>()?.Pickup();
+        }
+
+        private void Flip()
+        {
+            facingRight = !facingRight;
+            Vector3 Scaler = transform.localScale;
+            Scaler.x *= -1;
+            transform.localScale = Scaler;
+            FindObjectOfType<WeaponPlayerController>().transform.localScale = -Scaler;
+        }
+
+        //////////
+        // Weapons
+        private void InitializeWeaponContainer()
+        {
+            weaponContainer = new GameObject("WeaponController");
+            weaponContainer.transform.SetParent(gameObject.transform);
+            WeaponPlayerController weaponController = weaponContainer.AddComponent<WeaponPlayerController>();
+            weaponController.Initialize(startingWeaponData);
+        }
+
+        private void ChangeWeapons()
+        {
+            if (weapons.Count == 0) return;
+
+            int nextWeaponIndex = currentWeaponIndex + 1;
+            if (nextWeaponIndex > weapons.Count - 1)
+            {
+                nextWeaponIndex = 0;
+            }
+            currentWeaponIndex = nextWeaponIndex;
+            weaponContainer.GetComponent<WeaponPlayerController>().ChangeWeapon(weapons[currentWeaponIndex]);
+        }
+
+        public override void AddBuff(Type buffType)
+        {
+            base.AddBuff(buffType);
+            gameEventController.PublishEvent(new UINotificationEvent("Player gained buff " + buffType));
+        }
+
+        public override void RemoveBuff(Type buffType)
+        {
+            base.RemoveBuff(buffType);
+            gameEventController.PublishEvent(new UINotificationEvent("Player lost buff " + buffType));
+        }
+
+        protected override void DamageCall()
+        {
+            gameEventController.PublishEvent(new PlayerHealthEvent(curHealth, maxHealth));
+            OnPlayerHealthChange.Invoke(new Vector2(curHealth, maxHealth));
+        }
+
+        public void SetJumpForce(float newValue)
+        {
+            jumpForce = newValue;
+        }
+
+        public float GetJumpForce()
+        {
+            return jumpForce;
+        }
+    }
+}
