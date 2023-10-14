@@ -6,11 +6,9 @@ namespace Bunker
     public abstract class InteractableController : MonoBehaviour
     {
         private bool inRange = false;
-        protected GameEventController gameEventController;
 
         private void Start()
         {
-            gameEventController = FindObjectOfType<GameController>().gameEventController;
             CircleCollider2D collider = gameObject.AddComponent<CircleCollider2D>();
             collider.radius = FindObjectOfType<GameController>().gameSettings.InteractDistance;
             collider.isTrigger = true;

@@ -5,7 +5,6 @@ namespace Bunker
     public class GameController : MonoBehaviour
     {
         public GameSettings gameSettings;
-        public GameEventController gameEventController = new GameEventController();
 
         private void Awake()
         {

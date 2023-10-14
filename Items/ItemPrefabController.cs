@@ -9,13 +9,11 @@ namespace Bunker
         public ItemData itemData;
 
         private PickupEffect pickupEffect;
-        private GameEventController gameEventController;
         private GameSettings gameSettings;
 
         private void Start()
         {
             gameSettings = FindObjectOfType<GameController>().gameSettings;
-            gameEventController = FindObjectOfType<GameController>().gameEventController;
             if (itemData.sprite)
             {
                 gameObject.GetComponent<SpriteRenderer>().sprite = itemData.sprite;
@@ -36,7 +34,7 @@ namespace Bunker
 
         public void Pickup()
         {
-            gameEventController.PublishEvent(new UINotificationEvent("Picked up " + itemData.name));
+            UINotifications.Notify.Invoke("Picked up " + itemData.name);
             pickupEffect.Apply();
             Destroy(gameObject);
         }

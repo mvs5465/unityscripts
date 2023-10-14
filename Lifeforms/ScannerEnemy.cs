@@ -6,7 +6,6 @@ namespace Bunker
     public class ScannerEnemy : Enemy
     {
         private float timeToFlip = 0.5f;
-        private bool dying = false;
         private GameSettings gameSettings;
 
         override protected int GetContactDamage()
@@ -18,7 +17,6 @@ namespace Bunker
         {
             gameSettings = FindObjectOfType<GameController>().gameSettings;
             curHealth = maxHealth = gameSettings.RedMonsterHealth;
-            dying = false;
         }
 
         IEnumerator ChangeSpin()

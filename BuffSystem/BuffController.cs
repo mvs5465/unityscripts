@@ -9,11 +9,6 @@ namespace Bunker
     {
         public List<Type> buffList = new();
         private Lifeform target;
-        private GameEventController gameEventController;
-
-        private void Start() {
-            gameEventController = FindObjectOfType<GameController>().gameEventController;
-        }
 
         public void SetTarget(Lifeform target)
         {
@@ -26,7 +21,7 @@ namespace Bunker
             Buff buff = (Buff)buffContainer.AddComponent(buffType);
             if (buff.IsUnique() && buffList.Contains(buffType))
             {
-                gameEventController.PublishEvent(new UINotificationEvent("Cannot equip more " + buff.name + "s!"));
+                UINotifications.Notify.Invoke($"Cannot equip more {buff.name}!");
                 Destroy(buffContainer);
                 return;
             }

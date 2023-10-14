@@ -23,7 +23,7 @@ namespace Bunker
         {
             if (!activated)
             {
-                gameEventController.PublishEvent(new UINotificationEvent("Use this console to return to the planet.", 6));
+                UINotifications.NotifyTimed.Invoke("Use this console to return to the planet.", 6);
             }
         }
 
@@ -35,7 +35,7 @@ namespace Bunker
             {
                 activated = true;
                 animationController.SetAnimation(doneAnimation);
-                gameEventController.PublishEvent(new UINotificationEvent("Landing sequence initiated!", 4));
+                UINotifications.NotifyTimed.Invoke("Landing sequence initiated!", 4);
                 InvokeRepeating("StartCountDown", 2, 1);
             }
         }
@@ -44,7 +44,7 @@ namespace Bunker
         {
             if (cooldown > 0)
             {
-                gameEventController.PublishEvent(new UINotificationEvent("Planetside in " + cooldown));
+                UINotifications.Notify.Invoke("Planetside in " + cooldown);
                 cooldown--;
                 return;
             }

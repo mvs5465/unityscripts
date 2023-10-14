@@ -43,7 +43,7 @@ namespace Bunker
             }
             else if (doorKey != null && !FindObjectOfType<Player>().inventory.HasItem(doorKey))
             {
-                gameEventController.PublishEvent(new UINotificationEvent("This door requires a key!"));
+                UINotifications.Notify.Invoke("This door requires a key!");
             }
         }
 

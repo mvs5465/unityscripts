@@ -23,7 +23,7 @@ namespace Bunker
         {
             if (!activated)
             {
-                gameEventController.PublishEvent(new UINotificationEvent("The AI in this area has gone rogue. Use this console to deactivate them and secure the base.", 6));
+                UINotifications.NotifyTimed.Invoke("The AI in this area has gone rogue. Use this console to deactivate them and secure the base.", 6);
             }
         }
 
@@ -35,7 +35,7 @@ namespace Bunker
             {
                 activated = true;
                 animationController.SetAnimation(doneAnimation);
-                gameEventController.PublishEvent(new UINotificationEvent("AI systems returned to normal. Level complete, returning to ship!"));
+                UINotifications.Notify.Invoke("AI systems returned to normal. Level complete, returning to ship!");
                 InvokeRepeating("StartCountDown", 2, 1);
             }
         }
@@ -44,7 +44,7 @@ namespace Bunker
         {
             if (cooldown > 0)
             {
-                gameEventController.PublishEvent(new UINotificationEvent("Boarding ship in " + cooldown));
+                UINotifications.Notify.Invoke("Boarding ship in " + cooldown);
                 cooldown--;
                 return;
             }

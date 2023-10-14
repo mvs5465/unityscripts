@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,25 +6,17 @@ namespace Bunker
 {
     public class UINotifications : MonoBehaviour
     {
-        public class UINotificationEventSubscriber : GameEventSubscriber
-        {
-            private UINotifications uiNotifications;
-            public UINotificationEventSubscriber(UINotifications uiNotifications) => this.uiNotifications = uiNotifications;
-            public override void HandleEvent(GameEvent gameEvent)
-            {
-                if (gameEvent is UINotificationEvent uiNotificationEvent)
-                {
-                    uiNotifications.DisplayAlert(uiNotificationEvent.message);
-                }
-            }
-        }
+
+        public static Action<string> Notify;
+        public static Action<string, float> NotifyTimed;
 
         public Text alertText;
         public GameSettings gameSettings;
 
         private void Awake()
         {
-            FindObjectOfType<GameController>().gameEventController.Subscribe(new UINotificationEventSubscriber(this));
+            Notify += DisplayAlert;
+            NotifyTimed += DisplayAlert;
         }
 
         public void DisplayAlert(string message)

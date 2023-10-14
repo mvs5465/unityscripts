@@ -21,7 +21,6 @@ namespace Bunker
 
         public Inventory inventory;
 
-        private GameEventController gameEventController;
         private Camera mainCamera;
         public static Action<Vector2> OnPlayerHealthChange;
 
@@ -58,8 +57,6 @@ namespace Bunker
             // Weapons
             InitializeWeaponContainer();
             weapons.Add(startingWeaponData);
-
-            gameEventController = FindObjectOfType<GameController>().gameEventController;
             Invoke("DamageCall", 0.1f);
 
             LoadSaveState();
@@ -131,8 +128,6 @@ namespace Bunker
             if (Input.GetButton("Horizontal"))
             {
                 moveInput = Input.GetAxis("Horizontal");
-                // rb.velocity = new Vector3(0, rb.velocity.y, 0);
-                // transform.position += Vector3.right * moveInput * movingSpeed * Time.deltaTime;
                 rb.velocity = new Vector3(moveInput * movingSpeed, rb.velocity.y, 0);
                 animationToPlay = runningAnimation;
             }
@@ -198,7 +193,7 @@ namespace Bunker
             }
             else
             {
-                gameEventController.PublishEvent(new UINotificationEvent("Cannot equip more " + newWeapon.itemName + "s!"));
+                UINotifications.Notify.Invoke("Cannot equip more " + newWeapon.itemName + "!");
             }
         }
 
@@ -253,18 +248,17 @@ namespace Bunker
         public override void AddBuff(Type buffType)
         {
             base.AddBuff(buffType);
-            gameEventController.PublishEvent(new UINotificationEvent("Player gained buff " + buffType));
+            UINotifications.Notify.Invoke("Player gained buff " + buffType);
         }
 
         public override void RemoveBuff(Type buffType)
         {
             base.RemoveBuff(buffType);
-            gameEventController.PublishEvent(new UINotificationEvent("Player lost buff " + buffType));
+            UINotifications.Notify.Invoke("Player lost buff " + buffType);
         }
 
         protected override void DamageCall()
         {
-            gameEventController.PublishEvent(new PlayerHealthEvent(curHealth, maxHealth));
             OnPlayerHealthChange.Invoke(new Vector2(curHealth, maxHealth));
         }
 

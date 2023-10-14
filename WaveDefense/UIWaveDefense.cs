@@ -21,7 +21,6 @@ namespace Bunker
 
         public static GameObject Build(GameObject parent, UIData uiData)
         {
-            Debug.Log("Spawning score screen");
             GameObject scoreObject = UIUtils.CreateCanvas(parent);
             UIWaveDefense waveDefense = scoreObject.AddComponent<UIWaveDefense>();
             Text overlayText = UIUtils.CreateText(Vector3.zero, scoreObject, uiData, Color.white);
