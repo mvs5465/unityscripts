@@ -14,17 +14,11 @@ namespace Bunker
         protected string id = "";
         protected GameSettings gameSettings;
 
-        protected BuffController buffController;
-
         private void Start()
         {
             gameSettings = FindObjectOfType<GameController>().gameSettings;
 
             curHealth = maxHealth;
-
-            GameObject buffControllerObject = GameUtils.AddChildObject(gameObject, "BuffController");
-            buffController = buffControllerObject.AddComponent<BuffController>();
-            buffController.SetTarget(this);
 
             shieldObject = GameUtils.AddChildObject(gameObject, "Shield");
             SpriteRenderer sr = shieldObject.AddComponent<SpriteRenderer>();
@@ -109,16 +103,6 @@ namespace Bunker
         public virtual void SetId(string newId)
         {
             id = newId;
-        }
-
-        public virtual void AddBuff(Type buffType)
-        {
-            buffController.AddBuff(buffType);
-        }
-
-        public virtual void RemoveBuff(Type buffType)
-        {
-            buffController.RemoveBuff(buffType);
         }
     }
 }

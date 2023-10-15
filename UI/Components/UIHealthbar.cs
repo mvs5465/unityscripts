@@ -15,7 +15,7 @@ namespace Bunker
 
         public void UpdateHealth(Vector3 newHealth)
         {
-            healthbarImage.fillAmount = (float)newHealth.x / newHealth.y;
+            healthbarImage.fillAmount = newHealth.x / newHealth.y;
             healthbarText.text = $"{newHealth.x}/{newHealth.y} ({newHealth.z})";
         }
 

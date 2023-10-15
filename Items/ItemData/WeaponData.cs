@@ -3,16 +3,16 @@ using UnityEngine;
 namespace Bunker
 {
     [CreateAssetMenu(menuName = "ScriptableObjects/WeaponData")]
-    public class WeaponData : ItemData
+    public class WeaponData : PickupEffectv2Data
     {
         [Header("Weapon Properties")]
         public AmmoData ammoData;
         public float cooldown = 1.0f;
         public WeaponPlayerController.FireMode fireMode = WeaponPlayerController.FireMode.NONE;
 
-        public override PickupEffectGlue.EffectType GetPickupEffectType()
+        public override void Apply(GameObject target)
         {
-            return PickupEffectGlue.EffectType.WeaponPickupEffect;
+            target.GetComponent<Player>().GrantWeapon(this);
         }
     }
 }

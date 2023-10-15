@@ -7,8 +7,6 @@ namespace Bunker
     public class ItemPrefabController : MonoBehaviour
     {
         public ItemData itemData;
-
-        private PickupEffect pickupEffect;
         private GameSettings gameSettings;
 
         private void Start()
@@ -26,13 +24,6 @@ namespace Bunker
 
             gameObject.AddComponent<CircleCollider2D>();
             gameObject.AddComponent<Rigidbody2D>().gravityScale = itemData.gravityScale;
-
-            if (!(itemData as PickupEffectv2Data))
-            {
-                GameObject pickupEffectContainer = CreatePickupEffectContainer();
-                pickupEffect = (PickupEffect)pickupEffectContainer.AddComponent(PickupEffectGlue.GetPickupType(itemData.GetPickupEffectType()));
-                pickupEffect.SetItemData(itemData);
-            }
         }
 
         private void Enable()
@@ -47,18 +38,7 @@ namespace Bunker
             {
                 (itemData as PickupEffectv2Data).Apply(target);
             }
-            else
-            {
-                pickupEffect.Apply();
-            }
             Destroy(gameObject);
-        }
-
-        private GameObject CreatePickupEffectContainer()
-        {
-            GameObject buffContainer = new("PickupEffectContainer");
-            buffContainer.transform.SetParent(gameObject.transform);
-            return buffContainer;
         }
     }
 }

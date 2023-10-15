@@ -8,7 +8,6 @@ namespace Bunker
     public class PlayerSaveData : ScriptableObject
     {
         [SerializeField] public List<WeaponData> weapons;
-        [SerializeField] public List<Type> buffs;
         public int currentWeaponIndex;
     }
 }

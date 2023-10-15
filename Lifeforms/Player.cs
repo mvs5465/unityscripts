@@ -65,7 +65,6 @@ namespace Bunker
         {
             playerSaveData.currentWeaponIndex = currentWeaponIndex;
             playerSaveData.weapons = weapons;
-            playerSaveData.buffs = buffController.buffList;
         }
 
         private void LoadSaveState()
@@ -75,23 +74,6 @@ namespace Bunker
                 currentWeaponIndex = playerSaveData.currentWeaponIndex;
                 weapons = playerSaveData.weapons;
                 weaponContainer.GetComponent<WeaponPlayerController>().ChangeWeapon(weapons[currentWeaponIndex]);
-            }
-
-            if (buffController.buffList != null)
-            {
-                foreach (Type buff in buffController.buffList)
-                {
-                    buffController.RemoveBuff(buff);
-                }
-            }
-
-            if (playerSaveData.buffs != null)
-            {
-                foreach (Type buff in playerSaveData.buffs)
-                {
-                    Debug.Log("Adding buff from save data: " + buff);
-                    buffController.AddBuff(buff);
-                }
             }
         }
 
@@ -120,6 +102,7 @@ namespace Bunker
             isGrounded = detected;
             if (isGrounded) { jumpsLeft = maxJumps; }
         }
+
         private void Update()
         {
             AnimationData animationToPlay = idleAnimation;
@@ -133,6 +116,7 @@ namespace Bunker
             {
                 rb.velocity = new Vector3(0, rb.velocity.y, 0);
             }
+
             if (rb.velocity.y > 0)
             {
                 animationToPlay = flyingAnimation;
@@ -141,6 +125,7 @@ namespace Bunker
             {
                 animationToPlay = fallingAnimation;
             }
+
             if (animationController.GetAnimation() != animationToPlay)
             {
                 animationController.SetAnimation(animationToPlay);
@@ -202,7 +187,7 @@ namespace Bunker
 
         override protected void DieCall()
         {
-            // SceneManager.LoadScene(2);
+            UINotifications.Notify.Invoke("YOU DIED");
             Time.timeScale = 0;
         }
 
@@ -241,19 +226,7 @@ namespace Bunker
             currentWeaponIndex = nextWeaponIndex;
             weaponContainer.GetComponent<WeaponPlayerController>().ChangeWeapon(weapons[currentWeaponIndex]);
         }
-
-        public override void AddBuff(Type buffType)
-        {
-            base.AddBuff(buffType);
-            UINotifications.Notify.Invoke("Player gained buff " + buffType);
-        }
-
-        public override void RemoveBuff(Type buffType)
-        {
-            base.RemoveBuff(buffType);
-            UINotifications.Notify.Invoke("Player lost buff " + buffType);
-        }
-
+        
         protected override void DamageCall()
         {
             OnPlayerHealthChange.Invoke(new Vector3(curHealth, maxHealth, shield));

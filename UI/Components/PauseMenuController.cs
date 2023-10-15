@@ -44,11 +44,8 @@ namespace Bunker
         private void ReloadSceneOnClick(EventBase tab)
         {
             Debug.Log("Clicked");
+            Time.timeScale = 1;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            // Button button = tab.target as Button;
-            // if (button.name == "Start")
-            // {
-            // }
         }
     }
 }

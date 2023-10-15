@@ -13,10 +13,5 @@ namespace Bunker
         [Header("World Properties")]
         public float spawnDensity = 0f;
         public float gravityScale = 1f;
-
-        public virtual PickupEffectGlue.EffectType GetPickupEffectType()
-        {
-            return PickupEffectGlue.EffectType.NoPickupEffect;
-        }
     }
 }

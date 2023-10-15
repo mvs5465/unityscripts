@@ -1,16 +1,15 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Bunker
-
 {
     public class ChestController : InteractableController
     {
         public Sprite openSprite;
         public Sprite closedSprite;
         public List<GameObject> itemPrefabs;
+        private List<GameObject> actualPrefabList = new();
 
         public static Action<bool> UpdateLockState;
         public static Action Open;
@@ -21,6 +20,10 @@ namespace Bunker
 
         protected override void StartCall()
         {
+            foreach (GameObject prefab in itemPrefabs)
+            {
+                actualPrefabList.Add(prefab);
+            }
             spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
             UpdateLockState += SetLockState;
             Open += OpenChest;
@@ -41,10 +44,18 @@ namespace Bunker
 
         private void SpawnItem()
         {
-            if (itemPrefabs.Count == 0) return;
+            if (actualPrefabList.Count == 0) return;
 
-            int itemIndex = UnityEngine.Random.Range(0, itemPrefabs.Count - 1);
-            GameObject item = Instantiate(itemPrefabs[itemIndex], transform.position, Quaternion.identity);
+            int itemIndex = UnityEngine.Random.Range(0, actualPrefabList.Count - 1);
+
+            GameObject item = Instantiate(actualPrefabList[itemIndex], transform.position, Quaternion.identity);
+            ItemData itemData = item.GetComponent<ItemPrefabController>().itemData;
+            if (itemData as WeaponData)
+            {
+                Debug.Log($"Not spawning anymore {itemData.itemName}");
+                actualPrefabList.Remove(actualPrefabList[itemIndex]);
+            }
+
         }
 
         protected override void Interact()

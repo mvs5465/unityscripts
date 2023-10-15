@@ -14,7 +14,6 @@ namespace Bunker
             text.color = color;
             text.alignment = TextAnchor.MiddleCenter;
             text.fontSize = 30;
-            // text.fontStyle = FontStyle.Bold;
             RectTransform rectTransform = textObject.GetComponent<RectTransform>();
             rectTransform.localPosition = localPosition;
             rectTransform.sizeDelta = new Vector2(500, 100);
