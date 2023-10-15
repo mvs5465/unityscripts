@@ -23,7 +23,6 @@ namespace Bunker
             {
                 GameObject newMonster = Instantiate(monsterPrefab, transform.position, Quaternion.identity);
                 newMonster.GetComponent<EnemyController>().SetId(spawnerId);
-                //newMonster.GetComponent<Rigidbody2D>()?.AddForce(transform.up * Random.Range(0.5f, 2f), ForceMode2D.Impulse);
             }
         }
 

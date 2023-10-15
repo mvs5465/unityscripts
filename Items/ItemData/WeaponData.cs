@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Bunker
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu(menuName = "ScriptableObjects/WeaponData")]
     public class WeaponData : ItemData
     {
         [Header("Weapon Properties")]

@@ -9,19 +9,29 @@ namespace Bunker
         public Rigidbody2D rb;
         protected int curHealth;
         protected int maxHealth;
+        protected int shield;
+        protected GameObject shieldObject;
         protected string id = "";
+        protected GameSettings gameSettings;
 
         protected BuffController buffController;
 
         private void Start()
         {
+            gameSettings = FindObjectOfType<GameController>().gameSettings;
+
             curHealth = maxHealth;
 
-            GameObject buffControllerObject = new("BuffController");
+            GameObject buffControllerObject = GameUtils.AddChildObject(gameObject, "BuffController");
             buffController = buffControllerObject.AddComponent<BuffController>();
-            buffController.transform.SetParent(gameObject.transform);
-            buffController.transform.position = gameObject.transform.position;
             buffController.SetTarget(this);
+
+            shieldObject = GameUtils.AddChildObject(gameObject, "Shield");
+            SpriteRenderer sr = shieldObject.AddComponent<SpriteRenderer>();
+            shieldObject.transform.localScale = Vector2.one * 1.1f;
+            sr.sprite = gameSettings.shieldSprite;
+            sr.sortingLayerName = "Entities";
+            shieldObject.SetActive(false);
 
             StartCall();
         }
@@ -34,16 +44,42 @@ namespace Bunker
             DieCall();
         }
 
+        public void GrantShield(int amount)
+        {
+            shield += amount;
+            Damage(0);
+        }
+
         public virtual void Damage(int amount)
         {
-            curHealth -= amount;
+            if (shield > 0)
+            {
+                shield -= amount;
+                if (shield < 0)
+                {
+                    curHealth += shield;
+                    shield = 0;
+                }
+            }
+            else
+            {
+                curHealth -= amount;
+            }
             if (curHealth <= 0)
             {
                 Die();
             }
-            else if (curHealth > maxHealth)
+            if (curHealth > maxHealth)
             {
                 curHealth = maxHealth;
+            }
+            if (shield > 0)
+            {
+                shieldObject.SetActive(true);
+            }
+            else
+            {
+                shieldObject.SetActive(false);
             }
             DamageCall();
         }

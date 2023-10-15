@@ -27,15 +27,30 @@ namespace Bunker
             gameObject.AddComponent<CircleCollider2D>();
             gameObject.AddComponent<Rigidbody2D>().gravityScale = itemData.gravityScale;
 
-            GameObject pickupEffectContainer = CreatePickupEffectContainer();
-            pickupEffect = (PickupEffect)pickupEffectContainer.AddComponent(PickupEffectGlue.GetPickupType(itemData.GetPickupEffectType()));
-            pickupEffect.SetItemData(itemData);
+            if (!(itemData as PickupEffectv2Data))
+            {
+                GameObject pickupEffectContainer = CreatePickupEffectContainer();
+                pickupEffect = (PickupEffect)pickupEffectContainer.AddComponent(PickupEffectGlue.GetPickupType(itemData.GetPickupEffectType()));
+                pickupEffect.SetItemData(itemData);
+            }
         }
 
-        public void Pickup()
+        private void Enable()
+        {
+            gameObject.GetComponent<Collider2D>().enabled = true;
+        }
+
+        public void Pickup(GameObject target)
         {
             UINotifications.Notify.Invoke("Picked up " + itemData.name);
-            pickupEffect.Apply();
+            if (itemData as PickupEffectv2Data)
+            {
+                (itemData as PickupEffectv2Data).Apply(target);
+            }
+            else
+            {
+                pickupEffect.Apply();
+            }
             Destroy(gameObject);
         }
 

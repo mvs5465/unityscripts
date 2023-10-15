@@ -13,10 +13,10 @@ namespace Bunker
             Player.OnPlayerHealthChange = UpdateHealth;
         }
 
-        public void UpdateHealth(Vector2 newHealth)
+        public void UpdateHealth(Vector3 newHealth)
         {
             healthbarImage.fillAmount = (float)newHealth.x / newHealth.y;
-            healthbarText.text = newHealth.x + "/" + newHealth.y;
+            healthbarText.text = $"{newHealth.x}/{newHealth.y} ({newHealth.z})";
         }
 
         public static GameObject Build(GameObject parent, UIData uiData)

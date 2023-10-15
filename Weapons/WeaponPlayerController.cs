@@ -1,11 +1,9 @@
-using System;
 using UnityEngine;
 
 namespace Bunker
 {
     public class WeaponPlayerController : MonoBehaviour
     {
-        [Serializable]
         public enum FireMode
         {
             NONE,
@@ -50,7 +48,10 @@ namespace Bunker
             spriteRenderer.sortingLayerName = "Entities";
             spriteRenderer.sortingOrder = 2;
             spriteRenderer.flipX = true;
-            spriteRenderer.transform.localPosition = new Vector3(0, 0, 0);
+            if (startingWeaponData.pseudoAnimationData)
+            {
+                PsuedoAnimationController.Build(gameObject, startingWeaponData.pseudoAnimationData);
+            }
         }
 
         public void Fire()
@@ -90,34 +91,13 @@ namespace Bunker
 
         private void FireSpread()
         {
-            float[] angles = { -10, 5, 0, 5, 10 };
-            foreach (float angle in angles)
+            float spreadRange = 0.5f;
+            for (int i = 0; i < 5; i++)
             {
-                GameObject projectile = new GameObject { layer = 8 };
-                projectile.AddComponent<AmmoController>().ammoData = currentWeapon.ammoData;
-
-                SpriteRenderer spriteRenderer = projectile.AddComponent<SpriteRenderer>();
-                spriteRenderer.sprite = currentWeapon.ammoData.sprite;
-                spriteRenderer.sortingLayerName = "Entities";
-                spriteRenderer.sortingOrder = 2;
-                spriteRenderer.flipX = !FindObjectOfType<Player>().facingRight;
-                projectile.AddComponent<CircleCollider2D>();
-
-                projectile.transform.position = transform.position;
-                projectile.transform.localScale = new Vector3(currentWeapon.ammoData.size, currentWeapon.ammoData.size, currentWeapon.ammoData.size);
-
-                float angleRads = angle * Mathf.Deg2Rad;
-                float cosAngle = Mathf.Cos(angleRads);
-                float sinAngle = Mathf.Sin(angleRads);
-                float newX = transform.right.x * cosAngle - transform.right.y * sinAngle;
-                float newY = transform.right.x * sinAngle + transform.right.y * cosAngle;
-
-                Rigidbody2D projectileRigidbody = projectile.AddComponent<Rigidbody2D>();
-                projectileRigidbody.AddForce(new Vector2(newX, newY) * currentWeapon.ammoData.speed, ForceMode2D.Impulse);
-
-                Destroy(projectile, currentWeapon.ammoData.range);
+                float randX = Random.Range(-spreadRange, spreadRange);
+                float randY = Random.Range(-spreadRange, spreadRange);
+                AmmoUtility.FireProjectile(currentWeapon.ammoData, transform.position, FindObjectOfType<Camera>().ScreenToWorldPoint(Input.mousePosition) + new Vector3(randX, randY), gameSettings.FRIENDLY_PROJECTILE_LAYER);
             }
-
         }
     }
 }

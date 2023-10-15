@@ -22,7 +22,7 @@ namespace Bunker
         public Inventory inventory;
 
         private Camera mainCamera;
-        public static Action<Vector2> OnPlayerHealthChange;
+        public static Action<Vector3> OnPlayerHealthChange;
 
         // Weapons
         public WeaponData startingWeaponData;
@@ -36,12 +36,10 @@ namespace Bunker
         public AnimationData flyingAnimation;
         public AnimationData runningAnimation;
         private PsuedoAnimationController animationController;
-        private GameSettings gameSettings;
 
         override protected void StartCall()
         {
             mainCamera = FindObjectOfType<Camera>();
-            gameSettings = FindObjectOfType<GameController>().gameSettings;
             curHealth = maxHealth = gameSettings.PlayerStartingHealth;
             movingSpeed = gameSettings.PlayerMoveSpeed;
             jumpForce = gameSettings.PlayerJumpForce;
@@ -59,7 +57,7 @@ namespace Bunker
             weapons.Add(startingWeaponData);
             Invoke("DamageCall", 0.1f);
 
-            LoadSaveState();
+            // LoadSaveState();
         }
 
 
@@ -210,7 +208,7 @@ namespace Bunker
 
         void OnCollisionEnter2D(Collision2D other)
         {
-            other.gameObject.GetComponent<ItemPrefabController>()?.Pickup();
+            other.gameObject.GetComponent<ItemPrefabController>()?.Pickup(gameObject);
         }
 
         private void Flip()
@@ -226,8 +224,7 @@ namespace Bunker
         // Weapons
         private void InitializeWeaponContainer()
         {
-            weaponContainer = new GameObject("WeaponController");
-            weaponContainer.transform.SetParent(gameObject.transform);
+            weaponContainer = GameUtils.AddChildObject(gameObject, "WeaponController");
             WeaponPlayerController weaponController = weaponContainer.AddComponent<WeaponPlayerController>();
             weaponController.Initialize(startingWeaponData);
         }
@@ -259,7 +256,7 @@ namespace Bunker
 
         protected override void DamageCall()
         {
-            OnPlayerHealthChange.Invoke(new Vector2(curHealth, maxHealth));
+            OnPlayerHealthChange.Invoke(new Vector3(curHealth, maxHealth, shield));
         }
 
         public void SetJumpForce(float newValue)

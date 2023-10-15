@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Bunker
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu(menuName = "ScriptableObjects/AnimationData")]
     public class AnimationData : ScriptableObject
     {
         public float frameRate = 0.1f;

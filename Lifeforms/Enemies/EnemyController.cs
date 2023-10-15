@@ -28,7 +28,7 @@ namespace Bunker
             player = FindObjectOfType<Player>();
             InvokeRepeating("SeekGround", 1, 2);
             InvokeRepeating("Patrol", 0, 2);
-            gameObject.layer = 7;
+            gameObject.layer = 12;
         }
 
         private void FixedUpdate()
@@ -66,8 +66,6 @@ namespace Bunker
 
         private void Setup()
         {
-            // gameObject.AddComponent<SpriteRenderer>().sprite = enemyData.sprite;
-
             GameObject lifeformObject = new GameObject
             {
                 name = "LifeformObject",
@@ -82,7 +80,6 @@ namespace Bunker
 
             CircleCollider2D collider = gameObject.AddComponent<CircleCollider2D>();
             collider.isTrigger = true;
-            // collider.contactCaptureLayers = LayerMask.NameToLayer("Player");
             if (aggroRangeOverride > 0)
             {
                 collider.radius = aggroRangeOverride;
@@ -97,8 +94,6 @@ namespace Bunker
             rb.drag = 0.9f;
             rb.freezeRotation = true;
             lifeformObject.GetComponent<Lifeform>().rb = rb;
-
-            // GroundDetector.Create(gameObject, 3f, new GroundNotificationTarget(this));
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -144,7 +139,7 @@ namespace Bunker
         private void Patrol()
         {
             float patrolDistance = 1f;
-            Vector3 randDir = new Vector3(Random.Range(-patrolDistance, patrolDistance), Random.Range(-patrolDistance, patrolDistance), 0);
+            Vector3 randDir = new (Random.Range(-patrolDistance, patrolDistance), Random.Range(-patrolDistance, patrolDistance), 0);
             rb.AddForce(randDir, ForceMode2D.Impulse);
         }
 

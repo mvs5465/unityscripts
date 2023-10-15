@@ -9,22 +9,22 @@ namespace Bunker
     {
         public List<GameObject> basicEnemies;
         public List<GameObject> rareEnemies;
-        public int maxSpawns;
+        public int waveSize = 10;
         public int aggroRange;
+        public int cooldownTime = 30;
 
         public static Action<int> OnScoreEvent;
 
         private string spawnerId;
         private int totalSpawns = 0;
-
-        private int cooldownTriggerAmount = 10;
-        private int cooldownTime = 30;
+        private int totalKills = 0;
         private bool coolingDown = false;
 
         void Start()
         {
             spawnerId = GenerateRandomId();
-            InvokeRepeating("SpawnMonster", 1, 3);
+            OnScoreEvent += UpdateScore;
+            InvokeRepeating("SpawnMonster", 1, 0.5f);
         }
 
         private void SpawnMonster()
@@ -43,10 +43,22 @@ namespace Bunker
                 newMonster.GetComponent<EnemyController>().aggroRangeOverride = aggroRange;
                 totalSpawns++;
             }
-            if (totalSpawns > 0 && totalSpawns % cooldownTriggerAmount == 0)
+
+            if (totalSpawns > 0 && totalSpawns % waveSize == 0)
             {
                 coolingDown = true;
                 Invoke("ResetCooldown", cooldownTime);
+            }
+        }
+
+        private void UpdateScore(int incrementAmount)
+        {
+            totalKills += incrementAmount;
+            if (totalKills > 0 && totalKills % waveSize == 0)
+            {
+                // ChestController.UpdateLockState.Invoke(false);
+                ChestController.Open.Invoke();
+                UINotifications.Notify.Invoke("Wave complete! Chest has generated a new item!");
             }
         }
 
@@ -66,7 +78,7 @@ namespace Bunker
                     existingLifeformCount++;
                 }
             }
-            return existingLifeformCount < maxSpawns;
+            return existingLifeformCount < waveSize;
         }
 
         private string GenerateRandomId()

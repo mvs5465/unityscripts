@@ -6,7 +6,6 @@ namespace Bunker
     public class ScannerEnemy : Enemy
     {
         private float timeToFlip = 0.5f;
-        private GameSettings gameSettings;
 
         override protected int GetContactDamage()
         {

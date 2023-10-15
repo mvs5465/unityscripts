@@ -29,6 +29,7 @@ namespace Bunker
         // Animations (todo store this somewhere else?)
         public AnimationData JetpackActive;
         public AnimationData JetpackInactive;
+        public Sprite shieldSprite;
 
         // Unity constants
         public string PlayerGameObjectName = "Player";
