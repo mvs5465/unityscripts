@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Bunker
 {
-    [System.Serializable]
     public class Inventory : ScriptableObject
     {
         public List<ItemData> items = new();

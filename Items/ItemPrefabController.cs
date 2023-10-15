@@ -7,11 +7,9 @@ namespace Bunker
     public class ItemPrefabController : MonoBehaviour
     {
         public ItemData itemData;
-        private GameSettings gameSettings;
 
         private void Start()
         {
-            gameSettings = FindObjectOfType<GameController>().gameSettings;
             if (itemData.sprite)
             {
                 gameObject.GetComponent<SpriteRenderer>().sprite = itemData.sprite;
@@ -34,9 +32,9 @@ namespace Bunker
         public void Pickup(GameObject target)
         {
             UINotifications.Notify.Invoke("Picked up " + itemData.name);
-            if (itemData as PickupEffectv2Data)
+            if (itemData as PickupEffectData)
             {
-                (itemData as PickupEffectv2Data).Apply(target);
+                (itemData as PickupEffectData).Apply(target);
             }
             Destroy(gameObject);
         }

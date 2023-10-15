@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace Bunker
 {
-    [CreateAssetMenu(menuName = "ScriptableObjects/Buff/Shield")]
-    public class ShieldItemData : PickupEffectv2Data
+    [CreateAssetMenu(menuName = "ScriptableObjects/Buffs/Shield")]
+    public class ShieldItemData : PickupEffectData
     {
         public int shieldAmount = 5;
 

@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Bunker
 {
     [CreateAssetMenu(menuName = "ScriptableObjects/Buffs/JetpackData")]
-    public class JetpackData : PickupEffectv2Data
+    public class JetpackData : PickupEffectData
     {
         public AnimationData jetpackActive;
         public AnimationData jetpackInactive;

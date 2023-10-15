@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Bunker
 {
     [CreateAssetMenu(menuName = "ScriptableObjects/Buffs/HealingOrbData")]
-    public class HealingOrbData : PickupEffectv2Data
+    public class HealingOrbData : PickupEffectData
     {
         public int duration = 30;
         public int healAmount = 1;

@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace Bunker
 {
-    [CreateAssetMenu(menuName = "ScriptableObjects/WeaponData")]
-    public class WeaponData : PickupEffectv2Data
+    [CreateAssetMenu(menuName = "ScriptableObjects/Weapons/WeaponData")]
+    public class WeaponData : PickupEffectData
     {
         [Header("Weapon Properties")]
         public AmmoData ammoData;

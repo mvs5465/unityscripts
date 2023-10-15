@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace Bunker
 {
-    [CreateAssetMenu(menuName = "ScriptableObjects/InventoryItemData")]
-    public class InventoryItemData : PickupEffectv2Data
+    [CreateAssetMenu(menuName = "ScriptableObjects/Items/InventoryItemData")]
+    public class InventoryItemData : PickupEffectData
     {
         public override void Apply(GameObject target)
         {
