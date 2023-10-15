@@ -8,6 +8,7 @@ namespace Bunker
         public int duration = 30;
         public int healAmount = 1;
         public int healPeriod = 5;
+        public AnimationData healingEffectAnimation;
 
         public override void Apply(GameObject target)
         {
@@ -27,6 +28,8 @@ namespace Bunker
                 {
                     Destroy(gameObject, healingOrbData.duration);
                 }
+
+                PsuedoAnimationController.Build(gameObject, healingOrbData.healingEffectAnimation);
 
                 InvokeRepeating("Heal", healingOrbData.healPeriod, healingOrbData.healPeriod);
             }

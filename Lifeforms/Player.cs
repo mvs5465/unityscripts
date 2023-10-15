@@ -50,7 +50,7 @@ namespace Bunker
 
             GroundDetector.Create(gameObject, 0.1f, Vector3.down * -0.5f, new GroundNotificationTarget(this));
 
-            animationController = PsuedoAnimationController.Build(gameObject, idleAnimation).GetComponent<PsuedoAnimationController>();
+            animationController = PsuedoAnimationController.Build(gameObject, idleAnimation, "Entities", 1).GetComponent<PsuedoAnimationController>();
 
             // Weapons
             InitializeWeaponContainer();

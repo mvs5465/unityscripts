@@ -24,11 +24,6 @@ namespace Bunker
             gameObject.AddComponent<Rigidbody2D>().gravityScale = itemData.gravityScale;
         }
 
-        private void Enable()
-        {
-            gameObject.GetComponent<Collider2D>().enabled = true;
-        }
-
         public void Pickup(GameObject target)
         {
             UINotifications.Notify.Invoke("Picked up " + itemData.name);

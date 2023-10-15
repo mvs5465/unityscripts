@@ -17,7 +17,13 @@ namespace Bunker
             return Build(parent, animationData, "Entities");
         }
 
+
         public static GameObject Build(GameObject parent, AnimationData animationData, string sortingLayerName)
+        {
+            return Build(parent, animationData, "Entities", 0);
+        }
+
+        public static GameObject Build(GameObject parent, AnimationData animationData, string sortingLayerName, int sortingLayerOrder)
         {
             GameObject controllerObject = new("PseudoAnimationController");
             controllerObject.transform.position = parent.transform.position;
@@ -28,6 +34,7 @@ namespace Bunker
             if (!parent.GetComponent<SpriteRenderer>()) { parent.AddComponent<SpriteRenderer>(); }
             SpriteRenderer sr = parent.GetComponent<SpriteRenderer>();
             sr.sortingLayerName = sortingLayerName;
+            sr.sortingOrder = sortingLayerOrder;
             controller.spriteRenderer = sr;
             controller.SetAnimation(animationData);
 
