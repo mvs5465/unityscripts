@@ -16,8 +16,6 @@ namespace Bunker
         public int BulletDamage = 1;
         public int BulletLifetime = 2;
         public int FireHealAmount = 1;
-        public int RedMonsterDamage = 1;
-        public int RedMonsterHealth = 2;
         public int MartianHealth = 5;
         public int MartianDamage = 1;
         public int MedkitHealAmount = 3;

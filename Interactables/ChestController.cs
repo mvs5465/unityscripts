@@ -50,9 +50,8 @@ namespace Bunker
 
             GameObject item = Instantiate(actualPrefabList[itemIndex], transform.position, Quaternion.identity);
             ItemData itemData = item.GetComponent<ItemPrefabController>().itemData;
-            if (itemData as WeaponData)
+            if (itemData as WeaponData || itemData as JetpackData)
             {
-                Debug.Log($"Not spawning anymore {itemData.itemName}");
                 actualPrefabList.Remove(actualPrefabList[itemIndex]);
             }
 

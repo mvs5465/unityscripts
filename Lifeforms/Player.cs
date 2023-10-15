@@ -85,6 +85,7 @@ namespace Bunker
         public void AddJumps(int amount)
         {
             maxJumps += amount;
+            jumpsLeft = maxJumps;
         }
 
         public void IncrementKillCount()
@@ -226,7 +227,7 @@ namespace Bunker
             currentWeaponIndex = nextWeaponIndex;
             weaponContainer.GetComponent<WeaponPlayerController>().ChangeWeapon(weapons[currentWeaponIndex]);
         }
-        
+
         protected override void DamageCall()
         {
             OnPlayerHealthChange.Invoke(new Vector3(curHealth, maxHealth, shield));

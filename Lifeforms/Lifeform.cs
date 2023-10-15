@@ -13,6 +13,7 @@ namespace Bunker
         protected GameObject shieldObject;
         protected string id = "";
         protected GameSettings gameSettings;
+        protected LifeformHealthbar lifeformHealthbar;
 
         private void Start()
         {
@@ -30,11 +31,17 @@ namespace Bunker
             StartCall();
         }
 
+        public void AddHealthbar()
+        {
+            lifeformHealthbar = LifeformHealthbar.Build(gameObject, gameSettings.uiData.healthbarSprite).GetComponent<LifeformHealthbar>();
+        }
+
         protected virtual void StartCall() { }
         protected virtual void DieCall() { }
 
         private void Die()
         {
+            if (lifeformHealthbar) lifeformHealthbar.transform.localScale = Vector3.zero;
             DieCall();
         }
 
@@ -44,29 +51,14 @@ namespace Bunker
             Damage(0);
         }
 
-        public virtual void Damage(int amount)
+        private int DamageShield(int amount)
         {
-            if (shield > 0)
-            {
-                shield -= amount;
-                if (shield < 0)
-                {
-                    curHealth += shield;
-                    shield = 0;
-                }
-            }
-            else
-            {
-                curHealth -= amount;
-            }
-            if (curHealth <= 0)
-            {
-                Die();
-            }
-            if (curHealth > maxHealth)
-            {
-                curHealth = maxHealth;
-            }
+            if (shield <= 0) return amount;
+            if (amount < 0) return amount;
+
+            shield -= amount;
+            int leftover = shield;
+            if (shield < 0) shield = 0;
             if (shield > 0)
             {
                 shieldObject.SetActive(true);
@@ -75,6 +67,23 @@ namespace Bunker
             {
                 shieldObject.SetActive(false);
             }
+            if (leftover < 0)
+            {
+                return leftover;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public virtual void Damage(int amount)
+        {
+            if (amount >= 0) amount = DamageShield(amount); // don't heal shields, but also allow an update of shields on Damage(0)
+            curHealth -= amount;
+            if (curHealth > maxHealth) curHealth = maxHealth;
+            if (lifeformHealthbar) lifeformHealthbar.UpdateSize(curHealth, maxHealth);
+            if (curHealth <= 0) Die();
             DamageCall();
         }
 

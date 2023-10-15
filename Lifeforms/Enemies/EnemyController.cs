@@ -71,7 +71,7 @@ namespace Bunker
                 name = "LifeformObject",
                 layer = 7,
             };
-            lifeformObject.AddComponent<ScannerEnemy>();
+            lifeformObject.AddComponent<ScannerEnemy>().enemyData = enemyData;
 
             lifeformObject.transform.position = gameObject.transform.position;
             lifeformObject.transform.SetParent(gameObject.transform);
@@ -94,6 +94,18 @@ namespace Bunker
             rb.drag = 0.9f;
             rb.freezeRotation = true;
             lifeformObject.GetComponent<Lifeform>().rb = rb;
+            Invoke("GrantShield", 0.1f);
+        }
+
+        private void GrantShield()
+        {
+            // todo: make this somewhere else i think
+
+            // roll a 10% chance at giving them a shield
+            if (Random.Range(0, 10) < 2)
+            {
+                gameObject.GetComponentInChildren<Lifeform>().GrantShield(gameObject.GetComponentInChildren<Lifeform>().GetMaxHealth());
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -139,7 +151,7 @@ namespace Bunker
         private void Patrol()
         {
             float patrolDistance = 1f;
-            Vector3 randDir = new (Random.Range(-patrolDistance, patrolDistance), Random.Range(-patrolDistance, patrolDistance), 0);
+            Vector3 randDir = new(Random.Range(-patrolDistance, patrolDistance), Random.Range(-patrolDistance, patrolDistance), 0);
             rb.AddForce(randDir, ForceMode2D.Impulse);
         }
 

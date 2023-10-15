@@ -5,17 +5,18 @@ namespace Bunker
 {
     public class ScannerEnemy : Enemy
     {
+        public EnemyData enemyData;
         private float timeToFlip = 0.5f;
 
         override protected int GetContactDamage()
         {
-            return gameSettings.RedMonsterDamage;
+            return enemyData.contactDamage;
         }
 
         override protected void StartCall()
         {
-            gameSettings = FindObjectOfType<GameController>().gameSettings;
-            curHealth = maxHealth = gameSettings.RedMonsterHealth;
+            AddHealthbar();
+            curHealth = maxHealth = enemyData.maxHealth;
         }
 
         IEnumerator ChangeSpin()

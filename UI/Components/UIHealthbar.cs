@@ -16,7 +16,14 @@ namespace Bunker
         public void UpdateHealth(Vector3 newHealth)
         {
             healthbarImage.fillAmount = newHealth.x / newHealth.y;
-            healthbarText.text = $"{newHealth.x}/{newHealth.y} ({newHealth.z})";
+            if (newHealth.z > 0)
+            {
+                healthbarText.text = $"{newHealth.x}/{newHealth.y} +{newHealth.z}";
+            }
+            else
+            {
+                healthbarText.text = $"{newHealth.x}/{newHealth.y}";
+            }
         }
 
         public static GameObject Build(GameObject parent, UIData uiData)
